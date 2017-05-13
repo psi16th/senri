@@ -31,8 +31,7 @@ color[]       userClr = new color[]{ color(255,0,0),
                                      color(0,255,255)
                                    };
 int jointNum = 15;
-int time = 20;
-ArrayList<PVector> pos = new ArrayList<PVector>();
+ArrayList<PVector[]> poslist = new ArrayList<PVector[]>();
                                    
 
 void setup()
@@ -134,21 +133,23 @@ void draw()
     
     
     //pos
-    strokeWeight(10);
-    if(frameCount%10 == 1){
-      posadd(userList[i]);
-      if(pos.size()>10){
-        pos.remove(0);
+    strokeWeight(1);
+    if(frameCount%1 == 0){
+      addPos(userList[i]);
+      if(poslist.size()>100){
+        poslist.remove(0);
       }
     }
-    for (int j=0; j<pos.size(); j++) {
-      point(pos.get(j).x, pos.get(j).y, pos.get(j).z);
+    for (int j=0; j<poslist.size(); j++) {
+      for(int k=0; k<15; k++){
+        point(poslist.get(j)[k].x, poslist.get(j)[k].y, poslist.get(j)[k].z);
+      }
     }
 
   }    
  
   // draw the kinect cam
-  context.drawCamFrustum();
+  //context.drawCamFrustum();
 
   
 }
@@ -195,10 +196,40 @@ void drawSkeleton(int userId)
 }
 
 
-void posadd(int userId){
-  PVector jointPos = new PVector();
-  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_HEAD,jointPos);
-  pos.add(jointPos);
+void addPos(int userId){
+  PVector[] pos = new PVector[jointNum];
+  for(int i=0; i<15; i++){
+    pos[i] = new PVector();
+  }
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_HEAD,pos[0]);
+//  pos[0] = jointPos.copy();
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_NECK,pos[1]);
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_SHOULDER,pos[2]);
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_ELBOW,pos[3]);
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_HAND,pos[4]);
+  //pos[4] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_SHOULDER,pos[5]);
+  //pos[5] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_ELBOW,pos[6]);
+  //pos[6] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_HAND,pos[7]);
+  //pos[7] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_TORSO,pos[8]);
+  //pos[8] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_HIP,pos[9]);
+  //pos[9] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_KNEE,pos[10]);
+  //pos[10] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_FOOT,pos[11]);
+  //pos[11] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_HIP,pos[12]);
+  //pos[12] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_KNEE,pos[13]);
+  //pos[13] = jointPos;
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_FOOT,pos[14]);
+  //pos[14] = jointPos;
+  
+  poslist.add(pos);
   
 }
 
