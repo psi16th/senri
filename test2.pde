@@ -133,7 +133,7 @@ void draw()
     
     
     //pos
-    strokeWeight(1);
+    strokeWeight(2);
     if(frameCount%1 == 0){
       addPos(userList[i]);
       if(poslist.size()>100){
@@ -141,11 +141,12 @@ void draw()
       }
     }
     for (int j=0; j<poslist.size(); j++) {
+      drawSkeletonTrack(poslist.get(j));
       for(int k=0; k<15; k++){
-        point(poslist.get(j)[k].x, poslist.get(j)[k].y, poslist.get(j)[k].z);
+        //point(poslist.get(j)[k].x, poslist.get(j)[k].y, poslist.get(j)[k].z);
+        
       }
     }
-
   }    
  
   // draw the kinect cam
@@ -196,39 +197,59 @@ void drawSkeleton(int userId)
 }
 
 
+void drawSkeletonTrack(PVector[] pos)
+{
+  strokeWeight(3);
+
+  // to get the 3d joint data
+  drawline(pos[0],pos[1]);
+  drawline(pos[1],pos[2]);
+  drawline(pos[2],pos[3]);
+  drawline(pos[3],pos[4]);
+  
+  drawline(pos[1],pos[5]);
+  drawline(pos[5],pos[6]);
+  drawline(pos[6],pos[7]);
+  
+  drawline(pos[2],pos[8]);
+  drawline(pos[5],pos[8]);
+  
+  drawline(pos[8],pos[9]);
+  drawline(pos[9],pos[10]);
+  drawline(pos[10],pos[11]);
+  
+  drawline(pos[8],pos[12]);
+  drawline(pos[12],pos[13]);
+  drawline(pos[13],pos[14]);
+ 
+}
+
+void drawline(PVector pos1, PVector pos2){
+  line(pos1.x, pos1.y, pos1.z,
+       pos2.x, pos2.y, pos2.z);
+}
+
 void addPos(int userId){
   PVector[] pos = new PVector[jointNum];
   for(int i=0; i<15; i++){
     pos[i] = new PVector();
   }
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_HEAD,pos[0]);
-//  pos[0] = jointPos.copy();
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_NECK,pos[1]);
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_SHOULDER,pos[2]);
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_ELBOW,pos[3]);
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_HAND,pos[4]);
-  //pos[4] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_SHOULDER,pos[5]);
-  //pos[5] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_ELBOW,pos[6]);
-  //pos[6] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_HAND,pos[7]);
-  //pos[7] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_TORSO,pos[8]);
-  //pos[8] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_HIP,pos[9]);
-  //pos[9] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_KNEE,pos[10]);
-  //pos[10] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_FOOT,pos[11]);
-  //pos[11] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_HIP,pos[12]);
-  //pos[12] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_KNEE,pos[13]);
-  //pos[13] = jointPos;
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_FOOT,pos[14]);
-  //pos[14] = jointPos;
-  
+
   poslist.add(pos);
   
 }
@@ -250,36 +271,36 @@ void drawLimb(int userId,int jointType1,int jointType2)
   drawJointOrientation(userId,jointType1,jointPos1,50);
 }
 
-void drawJointOrientation(int userId,int jointType,PVector pos,float length)
-{
-  // draw the joint orientation  
-  PMatrix3D  orientation = new PMatrix3D();
-  float confidence = context.getJointOrientationSkeleton(userId,jointType,orientation);
-  if(confidence < 0.001f) 
-    // nothing to draw, orientation data is useless
-    return;
-    
-  pushMatrix();
-    translate(pos.x,pos.y,pos.z);
-    
-    // set the local coordsys
-    applyMatrix(orientation);
-    
-    // coordsys lines are 100mm long
-    // x - r
-    stroke(255,0,0,confidence * 200 + 55);
-    line(0,0,0,
-         length,0,0);
-    // y - g
-    stroke(0,255,0,confidence * 200 + 55);
-    line(0,0,0,
-         0,length,0);
-    // z - b    
-    stroke(0,0,255,confidence * 200 + 55);
-    line(0,0,0,
-         0,0,length);
-  popMatrix();
-}
+//void drawJointOrientation(int userId,int jointType,PVector pos,float length)
+//{
+//  // draw the joint orientation  
+//  PMatrix3D  orientation = new PMatrix3D();
+//  float confidence = context.getJointOrientationSkeleton(userId,jointType,orientation);
+//  if(confidence < 0.001f) 
+//    // nothing to draw, orientation data is useless
+//    return;
+//    
+//  pushMatrix();
+//    translate(pos.x,pos.y,pos.z);
+//    
+//    // set the local coordsys
+//    applyMatrix(orientation);
+//    
+//    // coordsys lines are 100mm long
+//    // x - r
+//    stroke(255,0,0,confidence * 200 + 55);
+//    line(0,0,0,
+//         length,0,0);
+//    // y - g
+//    stroke(0,255,0,confidence * 200 + 55);
+//    line(0,0,0,
+//         0,length,0);
+//    // z - b    
+//    stroke(0,0,255,confidence * 200 + 55);
+//    line(0,0,0,
+//         0,0,length);
+//  popMatrix();
+//}
 
 // -----------------------------------------------------------------
 // SimpleOpenNI user events
